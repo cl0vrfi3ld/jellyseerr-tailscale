@@ -71,3 +71,4 @@ tsconfig.tsbuildinfo
 
 # Config Cache Directory
 config/cache
+charts/jellyseerr/test-values.yaml
