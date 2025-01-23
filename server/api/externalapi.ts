@@ -1,3 +1,5 @@
+import { MediaServerType } from '@server/constants/server';
+import { getSettings } from '@server/lib/settings';
 import type { RateLimitOptions } from '@server/utils/rateLimit';
 import rateLimit from '@server/utils/rateLimit';
 import type NodeCache from 'node-cache';
@@ -34,6 +36,8 @@ class ExternalAPI {
 
     const url = new URL(baseUrl);
 
+    const settings = getSettings();
+
     this.defaultHeaders = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -41,6 +45,9 @@ class ExternalAPI {
         Authorization: `Basic ${Buffer.from(
           `${url.username}:${url.password}`
         ).toString('base64')}`,
+      }),
+      ...(settings.main.mediaServerType === MediaServerType.EMBY && {
+        'Accept-Encoding': 'gzip',
       }),
       ...options.headers,
     };
@@ -62,10 +69,13 @@ class ExternalAPI {
     ttl?: number,
     config?: RequestInit
   ): Promise<T> {
+    const headers = { ...this.defaultHeaders, ...config?.headers };
     const cacheKey = this.serializeCacheKey(endpoint, {
       ...this.params,
       ...params,
+      headers,
     });
+
     const cachedItem = this.cache?.get<T>(cacheKey);
     if (cachedItem) {
       return cachedItem;
@@ -74,10 +84,7 @@ class ExternalAPI {
     const url = this.formatUrl(endpoint, params);
     const response = await this.fetch(url, {
       ...config,
-      headers: {
-        ...this.defaultHeaders,
-        ...config?.headers,
-      },
+      headers,
     });
     if (!response.ok) {
       const text = await response.text();
@@ -104,10 +111,13 @@ class ExternalAPI {
     ttl?: number,
     config?: RequestInit
   ): Promise<T> {
+    const headers = { ...this.defaultHeaders, ...config?.headers };
     const cacheKey = this.serializeCacheKey(endpoint, {
       config: { ...this.params, ...params },
+      headers,
       data,
     });
+
     const cachedItem = this.cache?.get<T>(cacheKey);
     if (cachedItem) {
       return cachedItem;
@@ -117,10 +127,7 @@ class ExternalAPI {
     const response = await this.fetch(url, {
       method: 'POST',
       ...config,
-      headers: {
-        ...this.defaultHeaders,
-        ...config?.headers,
-      },
+      headers,
       body: data ? JSON.stringify(data) : undefined,
     });
     if (!response.ok) {
@@ -148,10 +155,13 @@ class ExternalAPI {
     ttl?: number,
     config?: RequestInit
   ): Promise<T> {
+    const headers = { ...this.defaultHeaders, ...config?.headers };
     const cacheKey = this.serializeCacheKey(endpoint, {
       config: { ...this.params, ...params },
       data,
+      headers,
     });
+
     const cachedItem = this.cache?.get<T>(cacheKey);
     if (cachedItem) {
       return cachedItem;
@@ -161,10 +171,7 @@ class ExternalAPI {
     const response = await this.fetch(url, {
       method: 'PUT',
       ...config,
-      headers: {
-        ...this.defaultHeaders,
-        ...config?.headers,
-      },
+      headers,
       body: JSON.stringify(data),
     });
     if (!response.ok) {
@@ -220,9 +227,11 @@ class ExternalAPI {
     config?: RequestInit,
     overwriteBaseUrl?: string
   ): Promise<T> {
+    const headers = { ...this.defaultHeaders, ...config?.headers };
     const cacheKey = this.serializeCacheKey(endpoint, {
       ...this.params,
       ...params,
+      headers,
     });
     const cachedItem = this.cache?.get<T>(cacheKey);
 
@@ -237,10 +246,7 @@ class ExternalAPI {
         const url = this.formatUrl(endpoint, params, overwriteBaseUrl);
         this.fetch(url, {
           ...config,
-          headers: {
-            ...this.defaultHeaders,
-            ...config?.headers,
-          },
+          headers,
         }).then(async (response) => {
           if (!response.ok) {
             const text = await response.text();
@@ -263,10 +269,7 @@ class ExternalAPI {
     const url = this.formatUrl(endpoint, params, overwriteBaseUrl);
     const response = await this.fetch(url, {
       ...config,
-      headers: {
-        ...this.defaultHeaders,
-        ...config?.headers,
-      },
+      headers,
     });
     if (!response.ok) {
       const text = await response.text();
@@ -284,6 +287,14 @@ class ExternalAPI {
     }
 
     return data;
+  }
+
+  protected removeCache(endpoint: string, options?: Record<string, string>) {
+    const cacheKey = this.serializeCacheKey(endpoint, {
+      ...this.params,
+      ...options,
+    });
+    this.cache?.del(cacheKey);
   }
 
   private formatUrl(
@@ -310,13 +321,13 @@ class ExternalAPI {
 
   private serializeCacheKey(
     endpoint: string,
-    params?: Record<string, unknown>
+    options?: Record<string, unknown>
   ) {
-    if (!params) {
+    if (!options) {
       return `${this.baseUrl}${endpoint}`;
     }
 
-    return `${this.baseUrl}${endpoint}${JSON.stringify(params)}`;
+    return `${this.baseUrl}${endpoint}${JSON.stringify(options)}`;
   }
 
   private async getDataFromResponse(response: Response) {

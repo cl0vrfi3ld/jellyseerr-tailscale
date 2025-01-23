@@ -511,6 +511,96 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Zariel",
+      "name": "Chris Bannister",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2213?v=4",
+      "profile": "https://github.com/Zariel",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "C4J3",
+      "name": "Joe",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13005453?v=4",
+      "profile": "https://github.com/C4J3",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "guillaumearnx",
+      "name": "Guillaume ARNOUX",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37373941?v=4",
+      "profile": "https://me.garnx.fr",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dr-carrot",
+      "name": "dr-carrot",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17272571?v=4",
+      "profile": "https://github.com/dr-carrot",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gageorsburn",
+      "name": "Gage Orsburn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4692734?v=4",
+      "profile": "https://github.com/gageorsburn",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "GkhnGRBZ",
+      "name": "GkhnGRBZ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/127258824?v=4",
+      "profile": "https://github.com/GkhnGRBZ",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "benhaney",
+      "name": "Ben Haney",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31331498?v=4",
+      "profile": "http://benhaney.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Wunderharke",
+      "name": "Wunderharke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5105672?v=4",
+      "profile": "https://github.com/Wunderharke",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "methbkts",
+      "name": "Metin Bektas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30674934?v=4",
+      "profile": "https://github.com/methbkts",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "andrewkolda",
+      "name": "andrewkolda",
+      "avatar_url": "https://avatars.githubusercontent.com/u/158614532?v=4",
+      "profile": "https://github.com/andrewkolda",
+      "contributions": [
+        "design"
+      ]
     }
   ]
 }

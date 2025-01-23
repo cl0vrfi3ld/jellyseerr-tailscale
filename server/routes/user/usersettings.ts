@@ -57,7 +57,8 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
         email: user.email,
         discordId: user.settings?.discordId,
         locale: user.settings?.locale,
-        region: user.settings?.region,
+        discoverRegion: user.settings?.discoverRegion,
+        streamingRegion: user.settings?.streamingRegion,
         originalLanguage: user.settings?.originalLanguage,
         movieQuotaLimit: user.movieQuotaLimit,
         movieQuotaDays: user.movieQuotaDays,
@@ -147,7 +148,8 @@ userSettingsRoutes.post<
         user: req.user,
         discordId: req.body.discordId,
         locale: req.body.locale,
-        region: req.body.region,
+        discoverRegion: req.body.discoverRegion,
+        streamingRegion: req.body.streamingRegion,
         originalLanguage: req.body.originalLanguage,
         watchlistSyncMovies: req.body.watchlistSyncMovies,
         watchlistSyncTv: req.body.watchlistSyncTv,
@@ -155,7 +157,8 @@ userSettingsRoutes.post<
     } else {
       user.settings.discordId = req.body.discordId;
       user.settings.locale = req.body.locale;
-      user.settings.region = req.body.region;
+      user.settings.discoverRegion = req.body.discoverRegion;
+      user.settings.streamingRegion = req.body.streamingRegion;
       user.settings.originalLanguage = req.body.originalLanguage;
       user.settings.watchlistSyncMovies = req.body.watchlistSyncMovies;
       user.settings.watchlistSyncTv = req.body.watchlistSyncTv;
@@ -167,7 +170,8 @@ userSettingsRoutes.post<
       username: savedUser.username,
       discordId: savedUser.settings?.discordId,
       locale: savedUser.settings?.locale,
-      region: savedUser.settings?.region,
+      discoverRegion: savedUser.settings?.discoverRegion,
+      streamingRegion: savedUser.settings?.streamingRegion,
       originalLanguage: savedUser.settings?.originalLanguage,
       watchlistSyncMovies: savedUser.settings?.watchlistSyncMovies,
       watchlistSyncTv: savedUser.settings?.watchlistSyncTv,
@@ -319,6 +323,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
         telegramEnabled: settings.telegram.enabled,
         telegramBotUsername: settings.telegram.options.botUsername,
         telegramChatId: user.settings?.telegramChatId,
+        telegramMessageThreadId: user.settings?.telegramMessageThreadId,
         telegramSendSilently: user.settings?.telegramSendSilently,
         webPushEnabled: settings.webpush.enabled,
         notificationTypes: user.settings?.notificationTypes ?? {},
@@ -361,6 +366,7 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
           pushoverApplicationToken: req.body.pushoverApplicationToken,
           pushoverUserKey: req.body.pushoverUserKey,
           telegramChatId: req.body.telegramChatId,
+          telegramMessageThreadId: req.body.telegramMessageThreadId,
           telegramSendSilently: req.body.telegramSendSilently,
           notificationTypes: req.body.notificationTypes,
         });
@@ -373,6 +379,8 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
         user.settings.pushoverUserKey = req.body.pushoverUserKey;
         user.settings.pushoverSound = req.body.pushoverSound;
         user.settings.telegramChatId = req.body.telegramChatId;
+        user.settings.telegramMessageThreadId =
+          req.body.telegramMessageThreadId;
         user.settings.telegramSendSilently = req.body.telegramSendSilently;
         user.settings.notificationTypes = Object.assign(
           {},
@@ -391,6 +399,7 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
         pushoverUserKey: user.settings.pushoverUserKey,
         pushoverSound: user.settings.pushoverSound,
         telegramChatId: user.settings.telegramChatId,
+        telegramMessageThreadId: user.settings.telegramMessageThreadId,
         telegramSendSilently: user.settings.telegramSendSilently,
         notificationTypes: user.settings.notificationTypes,
       });

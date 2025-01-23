@@ -38,14 +38,14 @@ import {
   ExclamationTriangleIcon,
   EyeSlashIcon,
   FilmIcon,
+  MinusCircleIcon,
   PlayIcon,
+  StarIcon,
   TicketIcon,
 } from '@heroicons/react/24/outline';
 import {
   ChevronDoubleDownIcon,
   ChevronDoubleUpIcon,
-  MinusCircleIcon,
-  StarIcon,
 } from '@heroicons/react/24/solid';
 import { type RatingResponse } from '@server/api/ratings';
 import { IssueStatus } from '@server/constants/issue';
@@ -222,14 +222,14 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     });
   }
 
-  const region = user?.settings?.region
-    ? user.settings.region
-    : settings.currentSettings.region
-    ? settings.currentSettings.region
+  const discoverRegion = user?.settings?.discoverRegion
+    ? user.settings.discoverRegion
+    : settings.currentSettings.discoverRegion
+    ? settings.currentSettings.discoverRegion
     : 'US';
 
   const releases = data.releases.results.find(
-    (r) => r.iso_3166_1 === region
+    (r) => r.iso_3166_1 === discoverRegion
   )?.release_dates;
 
   // Release date types:
@@ -282,9 +282,15 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     );
   }
 
+  const streamingRegion = user?.settings?.streamingRegion
+    ? user.settings.streamingRegion
+    : settings.currentSettings.streamingRegion
+    ? settings.currentSettings.streamingRegion
+    : 'US';
   const streamingProviders =
-    data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
-      ?.flatrate ?? [];
+    data?.watchProviders?.find(
+      (provider) => provider.iso_3166_1 === streamingRegion
+    )?.flatrate ?? [];
 
   function getAvalaibleMediaServerName() {
     if (settings.currentSettings.mediaServerType === MediaServerType.EMBY) {
@@ -774,13 +780,13 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
           <div className="media-facts">
             {(!!data.voteCount ||
               (ratingData?.rt?.criticsRating &&
-                !!ratingData?.rt?.criticsScore) ||
+                typeof ratingData?.rt?.criticsScore === 'number') ||
               (ratingData?.rt?.audienceRating &&
                 !!ratingData?.rt?.audienceScore) ||
               ratingData?.imdb?.criticsScore) && (
               <div className="media-ratings">
                 {ratingData?.rt?.criticsRating &&
-                  !!ratingData?.rt?.criticsScore && (
+                  typeof ratingData?.rt?.criticsScore === 'number' && (
                     <Tooltip
                       content={intl.formatMessage(messages.rtcriticsscore)}
                     >
@@ -1057,14 +1063,26 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
               </div>
             )}
             {!!streamingProviders.length && (
-              <div className="media-fact">
+              <div className="media-fact flex-col gap-1">
                 <span>{intl.formatMessage(messages.streamingproviders)}</span>
-                <span className="media-fact-value">
+                <span className="media-fact-value flex flex-row flex-wrap gap-5">
                   {streamingProviders.map((p) => {
                     return (
-                      <span className="block" key={`provider-${p.id}`}>
-                        {p.name}
-                      </span>
+                      <Tooltip content={p.name}>
+                        <span
+                          className="opacity-50 transition duration-300 hover:opacity-100"
+                          key={`provider-${p.id}`}
+                        >
+                          <CachedImage
+                            type="tmdb"
+                            src={'https://image.tmdb.org/t/p/w45/' + p.logoPath}
+                            alt={p.name}
+                            width={32}
+                            height={32}
+                            className="rounded-md"
+                          />
+                        </span>
+                      </Tooltip>
                     );
                   })}
                 </span>
